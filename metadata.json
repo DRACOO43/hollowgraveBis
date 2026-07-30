@@ -1,0 +1,6 @@
+{
+  "name": "HollowGrave Production & Firm",
+  "description": "Premium creative digital agency & production firm specializing in cinematic video editing, web & mobile app development, UI/UX, branding, and AI automation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

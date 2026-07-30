@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .text-stroke {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+  }
+}
+
+body {
+  background-color: #050505;
+  color: #F5F5F5;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  overflow-x: hidden;
+}
