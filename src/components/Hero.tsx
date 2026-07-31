@@ -1,47 +1,82 @@
 import React from 'react';
-import { ArrowRight, Sparkles, Play, Code2, Film, Layers } from 'lucide-react';
+import { Play } from 'lucide-react';
+import { DiscordIcon } from './DiscordIcon';
+import { motion } from 'motion/react';
 
-interface HeroProps {
-  onOpenProjectRequest: () => void;
-}
-
-export const Hero: React.FC<HeroProps> = ({ onOpenProjectRequest }) => {
+export const Hero: React.FC = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden bg-[#050505] text-[#F5F5F5]">
       {/* Background Glows & Grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[100px]" />
+        <motion.div 
+          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-indigo-900/15 rounded-full blur-[100px]" 
+        />
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-8">
-            <div className="flex items-center gap-3 mb-6">
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 35 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-8"
+          >
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center gap-3 mb-6"
+            >
               <div className="h-[1px] w-12 bg-purple-500" />
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-purple-400">HollowGrave Production & Firm</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-5xl sm:text-7xl lg:text-[96px] leading-[0.88] font-black tracking-tighter italic mb-8">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="text-5xl sm:text-7xl lg:text-[96px] leading-[0.88] font-black tracking-tighter italic mb-8"
+            >
               HOLLOW<span className="text-transparent text-stroke">GRAVE</span>
               <span className="block text-2xl sm:text-4xl lg:text-5xl font-mono not-italic tracking-wider text-purple-300 font-bold mt-2">
                 Production & Firm
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="max-w-xl text-lg sm:text-xl text-white/70 leading-relaxed mb-10">
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45 }}
+              className="max-w-xl text-lg sm:text-xl text-white/70 leading-relaxed mb-10"
+            >
               The ultimate creative studio and digital production firm. We build ultra-sleek websites, high-converting web apps, cinematic video edits, and global brand identities.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-12">
-              <button
-                onClick={onOpenProjectRequest}
-                className="px-8 py-4 bg-white text-black text-xs font-bold uppercase tracking-widest rounded-full hover:bg-purple-500 hover:text-white transition-all shadow-xl shadow-white/5 flex items-center gap-3 group"
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.55 }}
+              className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12"
+            >
+              <a
+                href="https://discord.gg/8znW9nfYhQ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 border border-indigo-400/40 text-white text-xs font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-3 shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/50 hover:scale-105 backdrop-blur-xl group animate-glow-pulse"
               >
-                <span>Get Started Now</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+                <DiscordIcon className="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
+                <span>Join Our Discord</span>
+              </a>
+
               <a
                 href="#portfolio"
                 className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold uppercase tracking-widest rounded-full transition-all flex items-center gap-3 backdrop-blur-xl"
@@ -49,9 +84,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenProjectRequest }) => {
                 <Play className="w-3.5 h-3.5 text-purple-400 fill-current" />
                 <span>View Portfolio</span>
               </a>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center gap-6 pt-4 border-t border-white/10">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="flex items-center gap-6 pt-4 border-t border-white/10"
+            >
               <div className="flex -space-x-3">
                 <div className="w-10 h-10 rounded-full border-2 border-black bg-purple-600 grid place-items-center text-[10px] font-bold text-white shadow-lg" title="Anshuman Bhalerao">AB</div>
                 <div className="w-10 h-10 rounded-full border-2 border-black bg-blue-600 grid place-items-center text-[10px] font-bold text-white shadow-lg" title="Raja Sahu">RS</div>
@@ -62,10 +102,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenProjectRequest }) => {
                 <span className="block font-bold text-white">Anshuman, Raja, Prince & Kabir</span>
                 <span className="text-white/40 uppercase tracking-wider">Leadership & Creative Leads</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="lg:col-span-4 space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.85, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-4 space-y-4"
+          >
             <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
               <div className="flex justify-between items-start mb-4">
                 <span className="text-[10px] font-bold uppercase text-purple-400 tracking-widest">Live Project</span>
@@ -92,14 +137,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenProjectRequest }) => {
               </div>
             </div>
 
-            <div className="p-5 rounded-xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 border border-purple-500/30 backdrop-blur-md">
+            <div className="p-5 rounded-xl bg-gradient-to-br from-purple-600/20 to-indigo-600/20 border border-purple-500/30 backdrop-blur-md">
               <div className="text-[10px] font-bold uppercase tracking-widest mb-1 text-purple-300 opacity-80">Next Available Slot</div>
               <div className="text-sm font-semibold text-white">September 2026 Cohort</div>
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
   );
 };
-

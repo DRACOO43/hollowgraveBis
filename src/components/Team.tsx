@@ -1,8 +1,193 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { TEAM_MEMBERS } from '../data/mockData';
 import { TeamMember } from '../types';
-import { Github, Linkedin, Twitter, Instagram, Send, Sparkles, CheckCircle2, Award, Briefcase, ExternalLink, Calendar, X, ChevronRight, MessageSquare, Mail, Loader2 } from 'lucide-react';
+import { Github, Linkedin, Twitter, Instagram, Send, Sparkles, CheckCircle2, Award, Briefcase, ChevronRight, MessageSquare, Mail, Loader2, X } from 'lucide-react';
 import { useToast } from './Toast';
+import { StaggerContainer, StaggerItem } from './ScrollEffects';
+
+interface TeamCardProps {
+  member: TeamMember;
+  onSelectMember: (m: TeamMember) => void;
+}
+
+const TeamCard: React.FC<TeamCardProps> = ({ member, onSelectMember }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [transform, setTransform] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+  const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    // Max 10 deg rotation
+    const rotateX = ((y - centerY) / centerY) * -9;
+    const rotateY = ((x - centerX) / centerX) * 9;
+
+    setTransform(`perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`);
+    setGlarePos({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+      opacity: 0.22
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+    setGlarePos(prev => ({ ...prev, opacity: 0 }));
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform,
+        transition: transform.includes('scale3d(1, 1, 1)')
+          ? 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'
+          : 'transform 0.08s ease-out',
+        transformStyle: 'preserve-3d'
+      }}
+      className="group rounded-3xl bg-neutral-900/80 border border-neutral-800/90 hover:border-purple-500/70 p-8 transition-colors duration-300 shadow-2xl backdrop-blur-xl flex flex-col justify-between relative overflow-hidden hover:shadow-purple-950/40"
+    >
+      {/* Dynamic Interactive Glare Overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-300 rounded-3xl z-20"
+        style={{
+          opacity: glarePos.opacity,
+          background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(168, 85, 247, 0.4) 0%, rgba(99, 102, 241, 0.2) 40%, transparent 75%)`
+        }}
+      />
+
+      {/* Ambient background blur inside card */}
+      <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all pointer-events-none" />
+
+      <div className="relative z-10">
+        {/* Header & Avatar */}
+        <div className="flex items-start gap-6 mb-6">
+          <div 
+            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-purple-500/40 shadow-xl group-hover:border-purple-400 group-hover:scale-105 transition-all shrink-0 bg-neutral-950"
+            style={{ transform: 'translateZ(20px)' }}
+          >
+            <img
+              src={member.image}
+              alt={member.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-purple-950/60 via-transparent to-transparent" />
+          </div>
+
+          <div className="space-y-1.5 flex-grow" style={{ transform: 'translateZ(15px)' }}>
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/90 border border-purple-800/70 text-purple-300 text-[10px] font-mono uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-purple-400" />
+                {member.role}
+              </span>
+              {member.verified && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-[10px] font-mono" title="Verified Founder/Lead">
+                  <CheckCircle2 className="w-3 h-3" /> VERIFIED
+                </span>
+              )}
+            </div>
+
+            <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+              {member.name}
+            </h3>
+
+            {member.status && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                {member.status}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Bio */}
+        <p className="text-neutral-300 text-sm leading-relaxed mb-6" style={{ transform: 'translateZ(10px)' }}>
+          {member.bio}
+        </p>
+
+        {/* Metrics Bar */}
+        <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-neutral-950/70 border border-neutral-800/80 mb-6 font-mono text-xs" style={{ transform: 'translateZ(12px)' }}>
+          <div className="flex items-center gap-2 text-neutral-300">
+            <Briefcase className="w-3.5 h-3.5 text-purple-400" />
+            <span>{member.projectsCompleted || 100}+ Projects</span>
+          </div>
+          <div className="flex items-center gap-2 text-neutral-300">
+            <Award className="w-3.5 h-3.5 text-indigo-400" />
+            <span>{member.experience || '5+ Years'}</span>
+          </div>
+        </div>
+
+        {/* Skills */}
+        <div className="mb-8" style={{ transform: 'translateZ(8px)' }}>
+          <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block mb-3">
+            Specialized Expertise
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {member.skills.map((skill, idx) => (
+              <span
+                key={idx}
+                className="px-2.5 py-1 rounded-lg bg-neutral-800/80 border border-neutral-700/60 text-xs font-mono text-purple-300 group-hover:border-purple-500/50 transition-colors"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Actions */}
+      <div className="relative z-10 pt-6 border-t border-neutral-800/80 space-y-4" style={{ transform: 'translateZ(18px)' }}>
+        <button
+          onClick={() => onSelectMember(member)}
+          className="w-full py-3 rounded-xl bg-purple-950/70 hover:bg-purple-600 border border-purple-800/70 hover:border-purple-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg group-hover:shadow-purple-600/30"
+        >
+          <MessageSquare className="w-3.5 h-3.5 text-purple-400 group-hover:text-white" />
+          <span>Direct Consultation & Profile</span>
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+
+        <div className="flex items-center justify-between text-xs font-mono text-neutral-400 pt-1">
+          <span className="uppercase text-[10px] tracking-widest">Connect</span>
+          <div className="flex items-center gap-2">
+            {member.socials.github && (
+              <a href={member.socials.github} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="GitHub">
+                <Github className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {member.socials.linkedin && (
+              <a href={member.socials.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="LinkedIn">
+                <Linkedin className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {member.socials.twitter && (
+              <a href={member.socials.twitter} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Twitter">
+                <Twitter className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {member.socials.instagram && (
+              <a href={member.socials.instagram} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Instagram">
+                <Instagram className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {member.socials.discord && (
+              <a href={member.socials.discord} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Discord Community">
+                <Send className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const Team: React.FC = () => {
   const { showToast } = useToast();
@@ -56,149 +241,35 @@ export const Team: React.FC = () => {
       <div className="absolute bottom-10 right-0 w-[400px] h-[400px] bg-indigo-900/10 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-mono tracking-[0.2em] uppercase mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-            LEADERSHIP & CREATIVE ARCHITECTS
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
-            Meet The Masterminds Behind HollowGrave
-          </h2>
-          <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-            Driven by relentless technical craftsmanship, elite engineering precision, and visionary creative direction that powers industry leaders worldwide.
-          </p>
-        </div>
-
-        {/* Team Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {TEAM_MEMBERS.map((member) => (
-            <div
-              key={member.id}
-              className="group rounded-3xl bg-neutral-900/70 border border-neutral-800/80 p-8 hover:border-purple-500/60 transition-all duration-500 shadow-2xl backdrop-blur-xl flex flex-col justify-between relative overflow-hidden hover:shadow-purple-950/20 hover:-translate-y-1"
-            >
-              {/* Card Accent Glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/15 transition-all pointer-events-none" />
-
-              <div>
-                {/* Header & Avatar */}
-                <div className="flex items-start gap-6 mb-6">
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-purple-500/40 shadow-xl group-hover:scale-105 transition-transform shrink-0 bg-neutral-950">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-purple-950/60 via-transparent to-transparent" />
-                  </div>
-
-                  <div className="space-y-1.5 flex-grow">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-800/60 text-purple-300 text-[10px] font-mono uppercase tracking-wider">
-                        <Sparkles className="w-3 h-3 text-purple-400" />
-                        {member.role}
-                      </span>
-                      {member.verified && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-[10px] font-mono" title="Verified Founder/Lead">
-                          <CheckCircle2 className="w-3 h-3" /> VERIFIED
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                      {member.name}
-                    </h3>
-
-                    {member.status && (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        {member.status}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Bio */}
-                <p className="text-neutral-300 text-sm leading-relaxed mb-6">
-                  {member.bio}
-                </p>
-
-                {/* Metrics Bar */}
-                <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-neutral-950/60 border border-neutral-800/60 mb-6 font-mono text-xs">
-                  <div className="flex items-center gap-2 text-neutral-300">
-                    <Briefcase className="w-3.5 h-3.5 text-purple-400" />
-                    <span>{member.projectsCompleted || 100}+ Projects</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-neutral-300">
-                    <Award className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>{member.experience || '5+ Years'}</span>
-                  </div>
-                </div>
-
-                {/* Skills */}
-                <div className="mb-8">
-                  <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block mb-3">
-                    Specialized Expertise
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {member.skills.map((skill, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2.5 py-1 rounded-lg bg-neutral-800/80 border border-neutral-700/60 text-xs font-mono text-purple-300 hover:border-purple-500/40 transition-colors"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Actions */}
-              <div className="pt-6 border-t border-neutral-800/80 space-y-4">
-                <button
-                  onClick={() => setSelectedMember(member)}
-                  className="w-full py-3 rounded-xl bg-purple-950/60 hover:bg-purple-600 border border-purple-800/60 hover:border-purple-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg group-hover:shadow-purple-600/20"
-                >
-                  <MessageSquare className="w-3.5 h-3.5 text-purple-400 group-hover:text-white" />
-                  <span>Direct Consultation & Profile</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-
-                <div className="flex items-center justify-between text-xs font-mono text-neutral-400 pt-1">
-                  <span className="uppercase text-[10px] tracking-widest">Connect</span>
-                  <div className="flex items-center gap-2">
-                    {member.socials.github && (
-                      <a href={member.socials.github} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="GitHub">
-                        <Github className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    {member.socials.linkedin && (
-                      <a href={member.socials.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="LinkedIn">
-                        <Linkedin className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    {member.socials.twitter && (
-                      <a href={member.socials.twitter} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Twitter">
-                        <Twitter className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    {member.socials.instagram && (
-                      <a href={member.socials.instagram} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Instagram">
-                        <Instagram className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    {member.socials.discord && (
-                      <a href={member.socials.discord} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-neutral-800/80 hover:bg-purple-600 text-neutral-300 hover:text-white transition-colors" title="Discord Community">
-                        <Send className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+        <StaggerContainer staggerDelay={0.15} viewportAmount={0.1}>
+          {/* Section Header */}
+          <StaggerItem variant="fade-up">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-mono tracking-[0.2em] uppercase mb-4">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                LEADERSHIP & CREATIVE ARCHITECTS
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                Meet The Masterminds Behind HollowGrave
+              </h2>
+              <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
+                Driven by relentless technical craftsmanship, elite engineering precision, and visionary creative direction that powers industry leaders worldwide.
+              </p>
             </div>
-          ))}
-        </div>
+          </StaggerItem>
+
+          {/* Team Cards Grid with 3D Parallax Tilt */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {TEAM_MEMBERS.map((member) => (
+              <StaggerItem key={member.id} variant="scale-up">
+                <TeamCard
+                  member={member}
+                  onSelectMember={setSelectedMember}
+                />
+              </StaggerItem>
+            ))}
+          </div>
+        </StaggerContainer>
       </div>
 
       {/* ==========================================
