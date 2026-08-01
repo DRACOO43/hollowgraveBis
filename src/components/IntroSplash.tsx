@@ -55,13 +55,13 @@ export const IntroSplash: React.FC<IntroSplashProps> = ({ onComplete }) => {
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
         className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#05050c] text-white selection:bg-purple-500 overflow-hidden"
       >
         {/* Background Ambient Glows */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
-        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-indigo-600/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/15 rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-[350px] h-[350px] bg-indigo-600/10 rounded-full pointer-events-none" />
         
         {/* Animated Cyber Grid */}
         <div

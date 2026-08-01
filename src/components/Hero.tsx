@@ -8,16 +8,8 @@ export const Hero: React.FC = () => {
     <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden bg-[#050505] text-[#F5F5F5]">
       {/* Background Glows & Grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[120px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-indigo-900/15 rounded-full blur-[100px]" 
-        />
+        <div className="absolute top-[-150px] left-[-150px] w-[500px] h-[500px] bg-purple-900/20 rounded-full opacity-60 pointer-events-none" />
+        <div className="absolute bottom-[-100px] right-[-100px] w-[450px] h-[450px] bg-indigo-900/15 rounded-full opacity-60 pointer-events-none" />
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       </div>
 
@@ -25,15 +17,15 @@ export const Hero: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           <motion.div 
-            initial={{ opacity: 0, y: 35 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="lg:col-span-8"
           >
             <motion.div 
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
               className="flex items-center gap-3 mb-6"
             >
               <div className="h-[1px] w-12 bg-purple-500" />
@@ -41,37 +33,45 @@ export const Hero: React.FC = () => {
             </motion.div>
 
             <motion.h1 
-              initial={{ opacity: 0, y: 30, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl sm:text-7xl lg:text-[96px] leading-[0.88] font-black tracking-tighter italic mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
+              className="text-5xl sm:text-7xl lg:text-[96px] leading-[0.88] font-black tracking-tighter italic mb-8 select-none group relative"
             >
-              HOLLOW<span className="text-transparent text-stroke">GRAVE</span>
-              <span className="block text-2xl sm:text-4xl lg:text-5xl font-mono not-italic tracking-wider text-purple-300 font-bold mt-2">
-                Production & Firm
+              <span className="inline-block bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent transition-all duration-300 hover:scale-[1.02] animate-rgb-split">
+                HOLLOW
+              </span>
+              <span className="inline-block text-transparent text-stroke-purple bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400 bg-clip-text animate-cyber-glitch ml-2 hover:brightness-125">
+                GRAVE
+              </span>
+              <span className="block text-2xl sm:text-4xl lg:text-5xl font-mono not-italic tracking-wider text-purple-300 font-bold mt-3 flex items-center gap-3">
+                <span className="bg-gradient-to-r from-purple-300 via-indigo-200 to-purple-400 bg-clip-text text-transparent hover:tracking-widest transition-all duration-500">
+                  Production & Firm
+                </span>
+                <span className="inline-block w-3 h-3 rounded-full bg-purple-500 animate-ping opacity-80 shadow-[0_0_12px_rgba(168,85,247,0.8)]" />
               </span>
             </motion.h1>
 
             <motion.p 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.45 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
               className="max-w-xl text-lg sm:text-xl text-white/70 leading-relaxed mb-10"
             >
               The ultimate creative studio and digital production firm. We build ultra-sleek websites, high-converting web apps, cinematic video edits, and global brand identities.
             </motion.p>
 
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.55 }}
+              transition={{ duration: 0.4, delay: 0.25 }}
               className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12"
             >
               <a
                 href="https://discord.gg/8znW9nfYhQ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 border border-indigo-400/40 text-white text-xs font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-3 shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/50 hover:scale-105 backdrop-blur-xl group animate-glow-pulse"
+                className="px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 border border-indigo-400/40 text-white text-xs font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-3 shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/50 hover:scale-105 backdrop-blur-xl group"
               >
                 <DiscordIcon className="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                 <span>Join Our Discord</span>
@@ -89,7 +89,7 @@ export const Hero: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
               className="flex items-center gap-6 pt-4 border-t border-white/10"
             >
               <div className="flex -space-x-3">
@@ -106,9 +106,9 @@ export const Hero: React.FC = () => {
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 40, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.85, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
             className="lg:col-span-4 space-y-4"
           >
             <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
